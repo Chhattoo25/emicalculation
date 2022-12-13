@@ -74,22 +74,24 @@ const {name,email} = user
  res.send({name,email})
 })
 
-app.post("/calculateEMI",authentication,async(req,res)=>{
-  const {amount,intrest_rate,tenure, user_id} = req.body;
-  const loan_amount  = Number(amount)
-   const  EMI = loan_amount * intrest_rate *( 1 + intrest_rate )**tenure/ ( ( 1 + intrest_rate )**tenure - 1 ) 
-  const new_EMI = new EMIModel({
+app.post("/calculateEMI", authentication,async (req, res) => {
+  const {principal, rate, time,user_id} = req.body;
+  const time1=time*12
+  const a=time1*(1+rate/100)
+  let b=time1-1
+  let c=(1+rate/100)*b
+  const EMI = principal*rate/100*a/c
+  const new_emi = new EMIModel({
      EMI,
-    amount:amount,
-    intrest_rate,
-    tenure,
-    user_id:user_id
+       principal,
+     time,
+     rate,
+     user_id
   })
-  await new_EMI.save()
-  console.log(EMI)
+  await new_bmi.save()
   res.send({EMI})
-  })
-
+ 
+})
 
 
 app.listen(PORT, async () => {
